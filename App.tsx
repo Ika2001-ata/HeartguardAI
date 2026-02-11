@@ -3,8 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { AppState, Vitals } from './types';
 import Dashboard from './components/Dashboard';
 import EmergencyAlert from './components/EmergencyAlert';
+import Sidebar from './components/Sidebar';
+import CaregiverMode from './components/CaregiverMode';
 
 const App: React.FC = () => {
+  const [activeView, setActiveView] = useState<AppState>(AppState.DASHBOARD);
   const [isAlertMode, setIsAlertMode] = useState(false);
   const [vitals, setVitals] = useState<Vitals>({
     heartRate: 72,
@@ -15,6 +18,7 @@ const App: React.FC = () => {
     timestamp: Date.now()
   });
 
+  // Simulation of live data and rare alerts
   useEffect(() => {
     const interval = setInterval(() => {
       setVitals(prev => {
@@ -22,9 +26,9 @@ const App: React.FC = () => {
         let hr = prev.heartRate + drift;
         hr = Math.max(60, Math.min(hr, 105));
 
-        // Occasional simulated critical alert
+        // Occasional simulated critical alert (0.1% chance per tick)
         if (Math.random() > 0.999) {
-          hr = 180;
+          hr = 175;
           setIsAlertMode(true);
         }
 
@@ -37,50 +41,51 @@ const App: React.FC = () => {
   const handleDismissAlert = () => {
     setIsAlertMode(false);
     setVitals(v => ({ ...v, heartRate: 72 }));
+    setActiveView(AppState.DASHBOARD);
+  };
+
+  const renderContent = () => {
+    switch (activeView) {
+      case AppState.CAREGIVER:
+        return <CaregiverMode vitals={vitals} />;
+      case AppState.DASHBOARD:
+      default:
+        return <Dashboard vitals={vitals} />;
+    }
   };
 
   return (
-    <div className="min-h-screen relative">
-      <nav className="h-20 border-b border-white/5 flex items-center justify-between px-10 bg-black/40 backdrop-blur-2xl fixed top-0 w-full z-50">
-        <div className="flex items-center gap-4">
-          <div className="neural-core">
-            <div className="w-2 h-2 bg-white rounded-full glow-cyan"></div>
+    <div className="flex min-h-screen bg-[#020408] text-slate-200">
+      <Sidebar activeView={activeView} onViewChange={setActiveView} />
+      
+      <main className="flex-1 flex flex-col relative">
+        <header className="h-20 border-b border-white/5 flex items-center justify-between px-10 bg-black/20 backdrop-blur-xl sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500">System Online</span>
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-xl font-black tracking-widest text-white uppercase italic leading-none">
-              HeartGuard<span className="text-cyan-400 font-normal">AI</span>
-            </h1>
-            <span className="text-[8px] font-mono text-cyan-500/60 uppercase tracking-[0.4em] mt-1">Uplink Stable</span>
+          <div className="flex items-center gap-6">
+            <div className="text-right hidden sm:block">
+              <div className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Alex Johnson</div>
+              <div className="text-[8px] font-mono text-slate-500 mt-1 uppercase">Safe Node 09</div>
+            </div>
+            <div className="w-10 h-10 rounded-2xl overflow-hidden border border-white/10 p-0.5">
+              <img src="https://picsum.photos/seed/user1/100/100" className="w-full h-full rounded-[14px] grayscale" alt="User" />
+            </div>
           </div>
-        </div>
+        </header>
 
-        <div className="hidden md:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-          <button className="text-cyan-400">Dashboard</button>
-          <button className="hover:text-white transition-colors">History</button>
-          <button className="hover:text-white transition-colors">Emergency Hub</button>
+        <div className="p-8 max-w-7xl mx-auto w-full">
+          {isAlertMode ? (
+            <EmergencyAlert vitals={vitals} onDismiss={handleDismissAlert} />
+          ) : (
+            renderContent()
+          )}
         </div>
-
-        <div className="flex items-center gap-4">
-          <div className="px-4 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20 hidden sm:flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-            <span className="text-[9px] font-black text-emerald-500 uppercase">Live Feed</span>
-          </div>
-          <div className="w-10 h-10 rounded-2xl overflow-hidden border border-white/10 p-0.5">
-            <img src="https://picsum.photos/seed/user1/100/100" className="w-full h-full rounded-[14px] grayscale" />
-          </div>
-        </div>
-      </nav>
-
-      <main className="pt-28 pb-20 max-w-7xl mx-auto px-8 relative z-10">
-        {isAlertMode ? (
-          <EmergencyAlert vitals={vitals} onDismiss={handleDismissAlert} />
-        ) : (
-          <Dashboard vitals={vitals} />
-        )}
       </main>
 
-      <footer className="py-10 text-center border-t border-white/5 opacity-40 text-[9px] font-mono uppercase tracking-[0.5em] relative z-10">
-        SAFE_NODE_09 // PROTOCOL_V4.2 // SECURE_TELEMETRY
+      <footer className="fixed bottom-4 right-8 opacity-20 text-[8px] font-mono uppercase tracking-[0.5em] pointer-events-none">
+        HeartGuard AI // v4.2 // Secure
       </footer>
     </div>
   );

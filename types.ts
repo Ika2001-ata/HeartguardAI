@@ -16,17 +16,7 @@ export interface Recommendation {
 
 export enum AppState {
   DASHBOARD = 'DASHBOARD',
-  ECG_HISTORY = 'ECG_HISTORY',
-  ANALYTICS = 'ANALYTICS',
+  HISTORY = 'HISTORY',
   CAREGIVER = 'CAREGIVER',
-  SETTINGS = 'SETTINGS',
-  ALERT = 'ALERT'
-}
-
-export interface Incident {
-  id: string;
-  time: string;
-  type: string;
-  severity: 'normal' | 'low' | 'high' | 'critical';
-  message: string;
+  SETTINGS = 'SETTINGS'
 }
