@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartGuard | AI Biometric Telemetry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --bg-dark: #020408;
+            --accent-cyan: #00f2ff;
+            --accent-red: #ff3b30;
+            --panel-red: #1a0505;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            margin: 0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% -20%, rgba(0, 242, 255, 0.05), transparent 60%),
+                linear-gradient(rgba(0, 242, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        /* Perspective Grid Floor (inspired by brand image) */
+        .grid-floor {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40vh;
+            background-image: 
+                linear-gradient(to bottom, transparent, var(--bg-dark)),
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: bottom;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Neural Core Logo CSS Implementation */
+        .neural-core {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            background: radial-gradient(circle, #00f2ff 0%, #002d33 70%, #000 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .neural-core::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+        }
+        .neural-core::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/microfab.png');
+            opacity: 0.3;
+        }
+
+        .glass-card {
+            background: rgba(10, 15, 25, 0.85);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .alert-card {
+            background: var(--panel-red);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+
+        .glow-cyan { filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.8)); }
+        
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(22px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(22px) rotate(-360deg); }
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 242, 255, 0.01) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            position: absolute;
+            top: 0; left: 0; z-index: 5;
+        }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^19.2.4",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
+      }
+    }
+    </script>
+</head>
+<body class="antialiased">
+    <div class="grid-floor"></div>
+    <div id="root"></div>
+</body>
+</html>

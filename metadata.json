@@ -1,0 +1,7 @@
+{
+  "name": "HeartGuard AI",
+  "description": "Professional-grade real-time heart health monitoring with AI-powered diagnostic analytics.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
